@@ -1,9 +1,8 @@
 #!/usr/bin/ruby
 
-require 'rubygems'
 require 'sinatra'
 require 'grit'
-require 'rdiscount'
+require 'maruku'
 
 module GitWiki
   class << self
@@ -50,15 +49,15 @@ class Page
   end
 
   def url
-    to_s == GitWiki.root_page ? '/' : "/pages/#{to_s}"
+    to_s == GitWiki.root_page ? '/' : "/#{to_s}"
   end
 
   def edit_url
-    "/pages/#{to_s}/edit"
+    "/#{to_s}/edit"
   end
 
   def log_url
-    "/pages/#{to_s}/revisions/"
+    "/#{to_s}/revisions/"
   end
 
   def css_class
@@ -70,7 +69,7 @@ class Page
   end
 
   def to_html
-    Page.wikify(RDiscount.new(content).to_html)
+    Page.wikify(Maruku.new(content).to_html)
   end
 
   def log
@@ -92,35 +91,35 @@ end
 
 get '/' do
   @page = Page.find_or_create(GitWiki.root_page)
-  haml :show
+  erb :show
 end
 
 get '/pages/' do
   @pages = Page.find_all
-  haml :list
+  erb :list
 end
 
-get '/pages/:page/?' do
+get '/:page/?' do
   @page = Page.find_or_create(params[:page])
-  haml :show
+  erb :show
 end
 
-get '/pages/:page/revisions/' do
+get '/:page/revisions/' do
   @page = Page.find_or_create(params[:page])
-  haml :log
+  erb :log
 end
 
-get '/pages/:page/revisions/:rev' do
+get '/:page/revisions/:rev' do
   @page = Page.find_or_create(params[:page], params[:rev])
-  haml :show
+  erb :show
 end
 
-get '/pages/:page/edit' do
+get '/:page/edit' do
   @page = Page.find_or_create(params[:page])
-  haml :edit
+  erb :edit
 end
 
-post '/pages/:page/edit' do
+post '/:page/edit' do
   @page = Page.find_or_create(params[:page])
   @page.save!(params[:content], params[:msg])
   redirect @page.url, 303
@@ -128,7 +127,7 @@ end
 
 configure do
   GitWiki.wiki_path = Dir.pwd
-  GitWiki.root_page = 'index'
-  GitWiki.extension = '.text'
+  GitWiki.root_page = 'Home'
+  GitWiki.extension = '.md'
   GitWiki.link_pattern = /\[\[(.*?)\]\]/
 end

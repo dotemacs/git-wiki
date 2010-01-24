@@ -5,8 +5,10 @@ and edit it. You can also commit files directly to the repository;
 pages are stored as `page-name.text` (that is, lowercased, punctuation
 removed, dashes for whitespace).
 
-Formatting and external links are done with [Markdown][]. To customize
-the appearance of your wiki, edit `views/*.haml` and `public/wiki.css`.
+Formatting and external links are done with [Markdown][] & [Markdown
+extra][]. To customize the appearance of your wiki, edit
+`views/*.erb` and `public/wiki.css`.
 
-[git-wiki]: http://github.com/decklin/git-wiki
+[git-wiki]: http://github.com/dotemacs/git-wiki
 [Markdown]: http://daringfireball.net/projects/markdown/syntax
+[Markdown extra]: 
